@@ -3,9 +3,9 @@
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card card-default">
-          <div class="card-header">Mistake example component</div>
+          <div class="card-header">I am the Profile Comp.</div>
           <div class="card-body">
-            Lest load the compnents here.
+            Load me here
           </div>
         </div>
       </div>
@@ -16,7 +16,7 @@
 <script>
 export default {
   mounted() {
-    console.log("Component mounted.");
+    console.log("profile mounted.");
   }
 };
 </script>
