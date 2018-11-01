@@ -6,8 +6,7 @@
           <div class="card-header">
             <h3 class="card-title">Users</h3>
             <div class="card-tools">
-              <button type="button" class="btn btn-primary" 
-                data-toggle="modal" data-target="#adduser">
+              <button type="button" class="btn btn-primary" @click="addUserModal">
                 Add User
                 <i class="fas fa-user-plus fa-fw"></i>
               </button>
@@ -33,8 +32,10 @@
                   <td>{{user.type | upperCase}}</td>
                   <td>{{user.created_at}}</td>
                   <td>
-                    <a href="#"><i class="fa fa-edit green"></i> Edit</a> ||
-                    <a href="#"><i class="fa fa-trash red"></i> Delete</a>
+                    <a href="#" @click="editUserModal(user)"><i class="fa fa-edit green"></i> Edit</a> ||
+                    <a href="#" @click="deleteUser(user.id)">
+                      <i class="fa fa-trash red"></i> Delete
+                    </a>
                   </td>
                 </tr>
               </tbody>
@@ -118,16 +119,53 @@ export default {
     }
   }, 
   methods: {
+    addUserModal() {
+      this.form.reset()
+      $('#adduser').modal('show')
+    },
+    editUserModal(user) {
+      this.form.reset()
+      $('#adduser').modal('show')
+      this.form.fill(user)
+    },
     createUser() {
+      this.$Progress.start()
       this.form.post('api/user').then( () => {
         UpdateEvent.$emit('UpdateData');
+        this.$Progress.finish()
         $('#adduser').modal('hide')
-      }).catch()
+        toast({
+          type: 'success',
+          title: 'User Created Successfully'
+        })
+      }).catch(this.$Progress.fail())
     },
     loadUsers() {
       axios.get("api/user").then(
         ({data}) => (this.users = data.data)
       );
+    },
+    deleteUser(id) {
+      swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          axios.delete("api/user/"+id).then( () => {
+          swal(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+          UpdateEvent.$emit('UpdateData');
+          }).catch()
+        }
+      })
     }
   },
   // life cycle hook

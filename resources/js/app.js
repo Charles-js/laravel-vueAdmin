@@ -5,23 +5,38 @@
 */
 
 require('./bootstrap');
-
 window.Vue = require('vue');
 
 import { Form, HasError, AlertError } from 'vform';
-
 window.Form = Form;
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 
+import VueProgressBar from 'vue-progressbar';
+Vue.use(VueProgressBar, {
+    color: 'rgb(143, 255, 199)',
+    failedColor: 'red',
+    height: '4px'
+  })
+
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
-
 let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue') },
     { path: '/users', component: require('./components/Users.vue')},
     { path: '/profile', component: require('./components/Profile.vue')}
 ]
+
+import swal from 'sweetalert2'
+window.swal = swal;
+
+const toast = swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000
+  });
+window.toast = toast;
 
 const router = new VueRouter({
     mode: 'history',
